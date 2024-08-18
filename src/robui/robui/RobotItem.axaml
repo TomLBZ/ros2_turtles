@@ -1,0 +1,79 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:robui">
+
+  <!--
+    Additional resources 
+    Using Control Themes:
+         https://docs.avaloniaui.net/docs/basics/user-interface/styling/control-themes
+    Using Theme Variants:
+         https://docs.avaloniaui.net/docs/guides/styles-and-resources/how-to-use-theme-variants
+  -->
+  
+  <Design.PreviewWith>
+    <StackPanel Width="188" Spacing="1">      
+        <StackPanel Background="{DynamicResource SystemRegionBrush}">
+          <ListBox>
+            <controls:RobotItem/>
+            <controls:RobotItem/>
+            <controls:RobotItem/>
+          </ListBox>
+        </StackPanel>
+    </StackPanel>
+  </Design.PreviewWith>
+ 
+  <Style Selector="controls|RobotItem">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid ColumnDefinitions="*, Auto, Auto" Margin="0">
+
+          <!--Styles-->
+          <Grid.Styles>
+            <Style Selector="TextBlock">
+              <Setter Property="FontSize" Value="10"/>
+              <Setter Property="Margin" Value="0"/>
+              <Setter Property="Padding" Value="0"/>
+            </Style>
+            <Style Selector="Button">
+              <Setter Property="Height" Value="20"/>
+              <Setter Property="Width" Value="50"/>
+              <Setter Property="Padding" Value="0"/>
+              <Setter Property="HorizontalContentAlignment" Value="Center"/>
+              <Setter Property="VerticalContentAlignment" Value="Center"/>
+              <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+            <Style Selector="Grid">
+              <Setter Property="Margin" Value="0"/>
+            </Style>
+          </Grid.Styles>
+
+          <!--Robot Name-->
+          <Grid RowDefinitions="*, Auto" Grid.Column="0">
+            <TextBlock Text="rectbot" Grid.Row="0" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+            <Grid ColumnDefinitions="*, *" Grid.Row="1">
+              <Button Content="Edit" Grid.Column="0" HorizontalAlignment="Left"/>
+              <Button Content="Delete" Grid.Column="1" HorizontalAlignment="Right"/>
+            </Grid>
+          </Grid>
+          
+          <!--Labels Column-->
+          <Grid RowDefinitions="*, *, *, *" Grid.Column="1" Width="14">
+            <TextBlock Text="♡:" Grid.Row="0" HorizontalAlignment="Right"/>
+            <TextBlock Text="𝑝:" Grid.Row="1" HorizontalAlignment="Right"/>
+            <TextBlock Text="𝑣:" Grid.Row="2" HorizontalAlignment="Right"/>
+            <TextBlock Text="𝜔:" Grid.Row="3" HorizontalAlignment="Right"/>
+          </Grid>
+         
+          <!--Values Column-->
+          <Grid RowDefinitions="*, *, *, *" Grid.Column="2" Width="48">
+            <TextBlock Text="idle" Grid.Row="0" HorizontalAlignment="Center"/>
+            <TextBlock Text="0.00, 0.00" Grid.Row="1"/>
+            <TextBlock Text="0.0000" Grid.Row="2"/>
+            <TextBlock Text="0.0000" Grid.Row="3"/>
+          </Grid>
+          
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>
