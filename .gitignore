@@ -4,5 +4,4 @@ log/
 test/
 .vs/
 src/robui/robui/bin/
-src/robui/robui/obj/Debug
-src/robui/robui/obj/Release
+src/robui/robui/obj/
