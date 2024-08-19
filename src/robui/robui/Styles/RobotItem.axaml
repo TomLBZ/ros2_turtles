@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:robui">
+        xmlns:controls="using:robui.Styles">
 
   <!--
     Additional resources 
@@ -38,6 +38,7 @@
               <Setter Property="Height" Value="20"/>
               <Setter Property="Width" Value="50"/>
               <Setter Property="Padding" Value="0"/>
+              <Setter Property="HorizontalAlignment" Value="Stretch"/>
               <Setter Property="HorizontalContentAlignment" Value="Center"/>
               <Setter Property="VerticalContentAlignment" Value="Center"/>
               <Setter Property="CornerRadius" Value="5"/>
@@ -48,28 +49,35 @@
           </Grid.Styles>
 
           <!--Robot Name-->
-          <Grid RowDefinitions="*, Auto" Grid.Column="0">
-            <TextBlock Text="rectbot" Grid.Row="0" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+          <Grid RowDefinitions="*, Auto, Auto" Grid.Column="0">
+            <TextBlock Text="{Binding Robot.Name, RelativeSource={RelativeSource TemplatedParent}}" 
+                       Grid.Row="0" FontSize="20"  FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Grid ColumnDefinitions="*, *" Grid.Row="1">
-              <Button Content="Edit" Grid.Column="0" HorizontalAlignment="Left"/>
-              <Button Content="Delete" Grid.Column="1" HorizontalAlignment="Right"/>
+              <TextBlock Text="♡:" Grid.Column="0" HorizontalAlignment="Right"/>
+              <TextBlock Text="{Binding Robot.State, RelativeSource={RelativeSource TemplatedParent}}" 
+                         Grid.Column="1" HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid ColumnDefinitions="*, *" Grid.Row="2">
+              <Button Content="{TemplateBinding LBtnText}" IsEnabled="{TemplateBinding IsLBtnEnabled}" Grid.Column="0"/>
+              <Button Content="{TemplateBinding RBtnText}" IsEnabled="{TemplateBinding IsRBtnEnabled}" Grid.Column="1"/>
             </Grid>
           </Grid>
           
           <!--Labels Column-->
           <Grid RowDefinitions="*, *, *, *" Grid.Column="1" Width="14">
-            <TextBlock Text="♡:" Grid.Row="0" HorizontalAlignment="Right"/>
-            <TextBlock Text="𝑝:" Grid.Row="1" HorizontalAlignment="Right"/>
+            <TextBlock Text="𝑝:" Grid.Row="0" HorizontalAlignment="Right"/>
+            <TextBlock Text="𝜃:" Grid.Row="1" HorizontalAlignment="Right"/>
             <TextBlock Text="𝑣:" Grid.Row="2" HorizontalAlignment="Right"/>
             <TextBlock Text="𝜔:" Grid.Row="3" HorizontalAlignment="Right"/>
           </Grid>
          
           <!--Values Column-->
           <Grid RowDefinitions="*, *, *, *" Grid.Column="2" Width="48">
-            <TextBlock Text="idle" Grid.Row="0" HorizontalAlignment="Center"/>
-            <TextBlock Text="0.00, 0.00" Grid.Row="1"/>
-            <TextBlock Text="0.0000" Grid.Row="2"/>
-            <TextBlock Text="0.0000" Grid.Row="3"/>
+            <TextBlock Text="{Binding Robot.PositionString, RelativeSource={RelativeSource TemplatedParent}}" Grid.Row="0"/>
+            <TextBlock Text="{Binding Robot.RotationString, RelativeSource={RelativeSource TemplatedParent}}" Grid.Row="1"/>
+            <TextBlock Text="{Binding Robot.LinearVString, RelativeSource={RelativeSource TemplatedParent}}" Grid.Row="2"/>
+            <TextBlock Text="{Binding Robot.AngularVString, RelativeSource={RelativeSource TemplatedParent}}" Grid.Row="3"/>
           </Grid>
           
         </Grid>

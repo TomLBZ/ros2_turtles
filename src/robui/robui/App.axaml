@@ -6,6 +6,6 @@
 
     <Application.Styles>
         <FluentTheme />
-      <StyleInclude Source="/RobotItem.axaml"/>
+      <StyleInclude Source="/Styles/RobotItem.axaml"/>
     </Application.Styles>
 </Application>
