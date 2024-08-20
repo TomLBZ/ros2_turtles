@@ -2,12 +2,12 @@ from typing import Tuple
 from threading import Thread
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
-from robmove.turtlesim_manager import TurtlesimManager
+from robmove.turtlehub import TurtleHub
 from robmove.turtlebot import Turtlebot
 
-def init() -> Tuple[TurtlesimManager, MultiThreadedExecutor]:
+def init() -> Tuple[TurtleHub, MultiThreadedExecutor]:
     rclpy.init()
-    manager = TurtlesimManager()
+    manager = TurtleHub()
     rectbot = Turtlebot('rectrob', 1.0, 4.0)
     rectbot.set_goals_loopback([(4.0, 4.0), (4.0, 6.0), (1.0, 6.0)])
     trigbot = Turtlebot('trirob', 6.0, 3.0)

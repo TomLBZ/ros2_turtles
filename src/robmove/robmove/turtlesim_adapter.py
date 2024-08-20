@@ -1,7 +1,7 @@
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
-from turtlesim.srv import Spawn, TeleportAbsolute
+from turtlesim.srv import Spawn, TeleportAbsolute, Kill
 
 # TurtlesimAdapter class provides easy access to turtlesim functionalities
 # such as spawn / teleport / move / pose
@@ -10,16 +10,20 @@ class TurtlesimAdapter(Node):
     # name: name of the turtlesim bot
     def __init__(self, name: str):
         super().__init__(name)
+    
+    def initialize(self, name: str):
         self.name = name
         self.spawn_client = self.create_client(Spawn, 'spawn')
+        self.kill_client = self.create_client(Kill, 'kill')
         self.teleport_client = self.create_client(TeleportAbsolute, name + '/teleport_absolute')
         self.publisher_cmd = self.create_publisher(Twist, name + '/cmd_vel', 10)
         self.subscription_pose = self.create_subscription(Pose, name + '/pose', self.pose_callback, 10)
         self.subscription_pose
-    
+        self.pose = Pose()
+
     # callback function for pose subscription, empty by default, to be overridden
     def pose_callback(self, msg: Pose):
-        pass
+        self.pose = msg
     
     # spawn a new turtlesim bot at (x, y, theta)
     def spawn(self, x: float, y: float, theta: float, verbose: bool = True):
@@ -32,6 +36,14 @@ class TurtlesimAdapter(Node):
         if verbose:
             self.get_logger().info('Spawned %s at (%f, %f, %f)' % (req.name, x, y, theta))
 
+    # kill the turtlesim bot
+    def kill(self, verbose: bool = True):
+        req = Kill.Request()
+        req.name = self.name
+        self.kill_client.call_async(req)
+        if verbose:
+            self.get_logger().info('Killed %s' % self.name)
+
     # teleport the turtlesim bot to (x, y, theta)
     def teleport(self, x: float, y: float, theta: float, verbose: bool = True):
         req = TeleportAbsolute.Request()
@@ -39,6 +51,10 @@ class TurtlesimAdapter(Node):
         req.y = y
         req.theta = theta
         self.teleport_client.call_async(req)
+        self.pose.x = x
+        self.pose.y = y
+        self.pose.theta = theta
+        self.pose_callback(self.pose)
         if verbose:
             self.get_logger().info('Teleported %s to (%f, %f, %f)' % (self.name, x, y, theta))
 

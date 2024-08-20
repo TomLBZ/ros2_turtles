@@ -23,7 +23,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'mov = robmove.mov:main'
+            'mov = robmove.mov:main',
+            'ros2socket = robmove.ros2socket:main',
+            'turtlebot = robmove.turtlebot:main',
+            'turtlehub = robmove.turtlehub:main',
         ],
     },
 )

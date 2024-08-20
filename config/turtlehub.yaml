@@ -1,0 +1,8 @@
+turtlehub:
+  ros__parameters:
+    output_topic: "/ros2socket/tosocket"
+    input_topic: "/ros2socket/fromsocket"
+    socket_state_topic: "/ros2socket/state"
+    state_topic: "/turtlehub/state"
+    state_publish_rate_hz: 10
+    ros2_bash: "/opt/ros/jazzy/setup.bash"

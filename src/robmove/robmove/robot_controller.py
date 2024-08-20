@@ -1,5 +1,5 @@
 from math import pi
-from typing import Callable
+from typing import Callable, Dict
 from robmove.state_machine import StateMachine
 
 # RobotController class contains a state machine for controlling a robot
@@ -45,6 +45,8 @@ class RobotController(StateMachine):
         self.last_y = 0.0
         self.last_theta = 0.0
         self.last_vert_index = 0
+        # callbacks for stopping the robot
+        self.stop_callbacks: Dict[str, Callable[[None], None]] = {}
 
     # linear distance between two points
     def lin_dist(self, from_x: float, from_y: float, to_x: float, to_y: float):
@@ -140,3 +142,5 @@ class RobotController(StateMachine):
         self.drive(0.0, 0.0)
         self.initialize_pose()
         self.set_state('idle')
+        for callback in self.stop_callbacks.values():
+            callback()

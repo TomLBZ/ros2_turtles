@@ -1,0 +1,8 @@
+ros2socket:
+    ros__parameters:
+        address: "localhost"
+        port: 8765
+        input_topic: "/ros2socket/tosocket"
+        output_topic: "/ros2socket/fromsocket"
+        state_topic: "/ros2socket/state"
+        state_publish_rate_hz: 10
