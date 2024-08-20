@@ -8,7 +8,7 @@
         Width="800" Height="450" WindowStartupLocation="CenterOwner"
         x:Class="robui.Views.MainWindow"
         x:DataType="viewmodels:MainViewModel"
-        Title="{Binding Title}">
+        Title="RobUI">
 
   <!--Styles-->
   <Window.Styles>
@@ -93,13 +93,13 @@
             <TextBlock Text="Websocket Settings" Width="180" FontSize="18" Height="30" Grid.Row="0"/>
             <Grid Grid.Row="1" ColumnDefinitions="* Auto">
               <TextBlock Text="Address:" Grid.Column="0"/>
-              <TextBox Text="{Binding Server.Address}" Grid.Column="1"/>
+              <TextBox Text="{Binding ServerAddress}" Grid.Column="1"/>
             </Grid>
             <Grid Grid.Row="2" ColumnDefinitions="* Auto">
               <TextBlock Text="Port:" Grid.Column="0"/>
-              <TextBox Text="{Binding Server.Port}" Grid.Column="1"/>
+              <TextBox Text="{Binding ServerPort}" Grid.Column="1"/>
             </Grid>
-            <ToggleSwitch Grid.Row="3" OnContent="Connected" OffContent="Disconnected" HorizontalAlignment="Center" IsChecked="{Binding Server.Status}"/>
+            <ToggleSwitch Grid.Row="3" OnContent="Connected" OffContent="Disconnected" HorizontalAlignment="Center" IsChecked="{Binding ServerStatus}"/>
           </Grid>
         </Border>
         <!--Properties block-->
@@ -109,19 +109,19 @@
             <TextBlock Text="[+new] Properties" Width="180" FontSize="18" Height="30" Grid.Row="0"/>
             <Grid Grid.Row="1" ColumnDefinitions="* Auto">
               <TextBlock Text="Name:" Grid.Column="0"/>
-              <TextBox Text="rectbot" Grid.Column="1"/>
+              <TextBox Text="{Binding SpawnBotName}" Grid.Column="1"/>
             </Grid>
             <Grid Grid.Row="2" ColumnDefinitions="* Auto">
               <TextBlock Text="Home:" Grid.Column="0"/>
-              <TextBox Text="(1, 3)" Grid.Column="1"/>
+              <TextBox Text="{Binding HomeCoordinates}" Grid.Column="1"/>
             </Grid>
             <Grid Grid.Row="3" ColumnDefinitions="* *">
-              <Button Content="Reset Home" Grid.Column="0"/>
-              <Button Content="Go Home" Grid.Column="1"/>
+              <Button Content="Set Home" Grid.Column="0"/>
+              <CheckBox IsChecked="{Binding IsVisualizeHome}" Content="See Home" Grid.Column="1" FontSize="12"/>
             </Grid>
             <Grid Grid.Row="4" ColumnDefinitions="* *">
-              <Button Content="Reset Path" Grid.Column="0"/>
-              <CheckBox IsChecked="True" Content="Loop Path" Grid.Column="1" FontSize="12"/>
+              <Button Content="Set Path" Grid.Column="0"/>
+              <CheckBox IsChecked="{Binding IsLoopPath}" Content="Loop Path" Grid.Column="1" FontSize="12"/>
             </Grid>
             <Grid Grid.Row="5" ColumnDefinitions="* *">
               <Button Content="Apply/Spawn" Grid.Column="0"/>
@@ -130,7 +130,7 @@
           </Grid>
         </Border>
 
-        <ToggleSwitch Grid.Row="2" OnContent="Advanced Mode [TODO]" OffContent="Simple Mode" HorizontalAlignment="Center" IsChecked="{Binding IsAdvancedMode}"/>
+        <ToggleSwitch Grid.Row="2" IsEnabled="False" OnContent="Advanced Mode [TODO]" OffContent="Simple Mode [LOCKED]" HorizontalAlignment="Center" IsChecked="{Binding IsAdvancedMode}"/>
       </Grid>
       
       <!--Robots pane-->
@@ -150,10 +150,81 @@
           <Grid RowDefinitions="Auto, *">
             <CheckBox IsEnabled="{Binding IsAdvancedMode}" IsChecked="{Binding IsSpawnAllowed}" Content="Allow New Bot Spawn" Grid.Row="0"/>
             <!--Robot list-->
-            <ListBox Grid.Row="1" SelectionMode="Single">
-              <controls:RobotItem Robot="{Binding Rectbot}" IsLBtnEnabled="{Binding IsAdvancedMode}" IsRBtnEnabled="{Binding IsAdvancedMode}" />
-              <controls:RobotItem Robot="{Binding Trigbot}" IsLBtnEnabled="{Binding IsAdvancedMode}" IsRBtnEnabled="{Binding IsAdvancedMode}" />
-              <Button IsEnabled="{Binding IsSpawnAllowed}" Content="[+new bot]" HorizontalAlignment="Center"/>
+            <ListBox Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Robots}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto" Margin="0">
+
+                    <!--Styles-->
+                    <Grid.Styles>
+                      <Style Selector="TextBlock">
+                        <Setter Property="FontSize" Value="10"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                      </Style>
+                      <Style Selector="Button">
+                        <Setter Property="Height" Value="20"/>
+                        <Setter Property="Width" Value="50"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="CornerRadius" Value="5"/>
+                      </Style>
+                      <Style Selector="Grid">
+                        <Setter Property="Margin" Value="0"/>
+                      </Style>
+                    </Grid.Styles>
+
+                    <!--Robot Name-->
+                    <Grid RowDefinitions="*, Auto, Auto" Grid.Column="0">
+                      <TextBlock Text="{Binding Name}"
+                                 Grid.Row="0" FontSize="20"  FontWeight="Bold"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      <Grid ColumnDefinitions="*, *" Grid.Row="1">
+                        <TextBlock Text="♡:" Grid.Column="0" HorizontalAlignment="Right"/>
+                        <TextBlock Text="{Binding State}"
+                                   Grid.Column="1" HorizontalAlignment="Left"/>
+                      </Grid>
+                      <Grid ColumnDefinitions="*, *" Grid.Row="2">
+                        <Button Content="Edit" IsEnabled="{Binding IsEditEnabled}" Grid.Column="0"/>
+                        <Button Content="Delete" IsEnabled="{Binding IsDeleteEnabled}" Grid.Column="1"/>
+                      </Grid>
+                    </Grid>
+
+                    <!--Labels Column-->
+                    <Grid RowDefinitions="*, *, *, *" Grid.Column="1" Width="10">
+                      <TextBlock Text="𝑝:" Grid.Row="0" HorizontalAlignment="Right"/>
+                      <TextBlock Text="𝜃:" Grid.Row="1" HorizontalAlignment="Right"/>
+                      <TextBlock Text="𝑣:" Grid.Row="2" HorizontalAlignment="Right"/>
+                      <TextBlock Text="𝜔:" Grid.Row="3" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!--Values Column 1-->
+                    <Grid RowDefinitions="*, *, *, *" Grid.Column="2" Width="30">
+                      <TextBlock Text="{Binding X}" HorizontalAlignment="Left" Grid.Row="0"/>
+                      <TextBlock Text="{Binding Rotation}" HorizontalAlignment="Left" Grid.Row="1"/>
+                      <TextBlock Text="{Binding LinearV}" HorizontalAlignment="Left" Grid.Row="2"/>
+                      <TextBlock Text="{Binding AngularV}" HorizontalAlignment="Left" Grid.Row="3"/>
+                    </Grid>
+                    
+                    <!--Separator Column-->
+                    <Grid RowDefinitions="*, *, *, *" Grid.Column="3" Width="2">
+                      <TextBlock Text="," Grid.Row="0"/>
+                    </Grid>
+                    
+                    <!--Values Column 2-->
+                    <Grid RowDefinitions="*, *, *, *" Grid.Column="4" Width="24">
+                      <TextBlock Text="{Binding Y}" HorizontalAlignment="Left" Grid.Row="0"/>
+                      <TextBlock Text="rad" HorizontalAlignment="Right" Grid.Row="1"/>
+                      <TextBlock Text="m/s" HorizontalAlignment="Right" Grid.Row="2"/>
+                      <TextBlock Text="rad/s" HorizontalAlignment="Right" Grid.Row="3"/>
+                    </Grid>
+
+                  </Grid>
+
+                </DataTemplate>
+              </ListBox.ItemTemplate>
             </ListBox>
           </Grid>
         </Border>
@@ -163,16 +234,16 @@
           <Grid RowDefinitions="Auto, Auto, Auto, Auto">
             <Grid ColumnDefinitions="Auto, *, Auto" Grid.Row="0">
               <TextBlock Text="Start after" Width="65" Grid.Column="0"/>
-              <TextBox Text="5" Grid.Column="1" Margin="0 0 2 0"/>
+              <TextBox Text="{Binding TaskStartDelaySeconds}" Grid.Column="1" Margin="0 0 2 0"/>
               <TextBlock Text="seconds" Width="55" Grid.Column="2"/>
             </Grid>
             <Grid ColumnDefinitions="Auto, *, Auto" Grid.Row="1">
-              <CheckBox IsChecked="True" Content="Repeat in" FontSize="12" HorizontalAlignment="Left"/>
-              <TextBox Text="2" Grid.Column="1" Margin="0 0 2 0"/>
+              <CheckBox IsChecked="{Binding IsTaskRepeatable}" Content="Repeat in" FontSize="12" HorizontalAlignment="Left"/>
+              <TextBox Text="{Binding TaskRepeatCycleMinutes}" Grid.Column="1" Margin="0 0 2 0"/>
               <TextBlock Text="minutes" Width="50" Grid.Column="2"/>
             </Grid>
-            <CheckBox Grid.Row="2" IsChecked="True" Content="Simultaneous" FontSize="12" HorizontalAlignment="Left" Margin="2 0"/>
-            <Button Content="Start Task Execution" Grid.Row="3" HorizontalAlignment="Center" Margin="0 0 0 2"/>
+            <CheckBox Grid.Row="2" IsChecked="{Binding IsTaskSimultaneous}" Content="Simultaneous" FontSize="12" HorizontalAlignment="Left" Margin="2 0"/>
+            <Button Content="Start Task Execution" Click="BtnStartTask_Click" Grid.Row="3" HorizontalAlignment="Center" Margin="0 0 0 2"/>
           </Grid>
         </Border>
       </Grid>
@@ -185,9 +256,17 @@
     <!--Status bar-->
     <Border Grid.Row="2" BorderBrush="Gray" BorderThickness="2">
       <Grid Height="25" ColumnDefinitions="Auto, *">
-        <Grid ColumnDefinitions="Auto *" Grid.Column="0">
-          <TextBlock Text="Turtlesim:" Grid.Column="0" FontSize="16" Margin="2 0"/>
-          <TextBlock Text="Online" Grid.Column="1" Foreground="LightGreen" FontSize="16"/>
+        <Grid ColumnDefinitions="Auto Auto *" Grid.Column="0">
+          <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="5 0">
+            <TextBlock Text="Turtlesim:" FontSize="16" Margin="2 0"/>
+            <TextBlock IsVisible="{Binding IsTurtlesimOnline}" Text="Online" Foreground="LimeGreen" FontSize="16"/>
+            <TextBlock IsVisible="{Binding !IsTurtlesimOnline}" Text="Offline" Foreground="OrangeRed" FontSize="16"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5 0">
+            <TextBlock Text="Movement Tasks:" FontSize="16" Margin="2 0"/>
+            <TextBlock IsVisible="{Binding IsTaskRunning}" Text="Running" Foreground="LimeGreen" FontSize="16"/>
+            <TextBlock IsVisible="{Binding !IsTaskRunning}" Text="Not running" Foreground="OrangeRed" FontSize="16"/>
+          </StackPanel>
         </Grid>
       </Grid>
     </Border>
