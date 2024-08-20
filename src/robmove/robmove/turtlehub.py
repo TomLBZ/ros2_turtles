@@ -129,7 +129,8 @@ class TurtleHub(Node):
         name, x, y, theta, loopback, pts = data[0], float(data[1]), float(data[2]), float(data[3]), bool(data[4]), [float(p) for p in data[5:]]
         if name in self.botnames:
             bot: Turtlebot = self.bots[name]
-            bot.stop()
+            bot.bot.drive(0.0, 0.0) # stops the bot
+            bot.bot.set_state('idle') # set the state to idle
             bot.home(x, y, theta)
             bot.loopback = loopback
             bot.edit(pts)
