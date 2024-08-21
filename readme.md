@@ -1,5 +1,19 @@
 # Time-Controlled Dual Robot Simulator
 
+## Sections
+1. [Required Functionalities](#required-functionalities)
+1. [Project Components](#project-components)
+    1. [RobUI](#robui)
+    1. [ROS2Socket](#ros2socket)
+    1. [Turtlebot](#turtlebot)
+    1. [Turtlehub](#turtlehub)
+1. [Compatibility](#compatibility)
+1. [Dependencies](#dependencies)
+1. [Usage](#usage)
+    1. [Basic Usage](#basic-usage)
+    1. [Advanced Usage](#advanced-usage)
+1. [UI Documentation](#ui-documentation)
+
 ## Required Functionalities
 1. Textbox for user to input time in seconds after which the robots should start moving.
 1. Checkbox to select simultaneous or sequential movement.
@@ -11,20 +25,23 @@
 
 ## Project Components
 
-### [√] RobUI, written in C#
+### RobUI
+1. written in CSharp
 1. Generalizable to control different robots in TurtleSim.
 1. Decoupled from the ROS2 environment.
 1. Communicates to a ROS2 node via a WebSocket connection.
 1. Provides a cross-platform, modern and user-friendly GUI interface.
 
-### [√] ROS2Socket, written in Python
+### ROS2Socket
+1. written in Python
 1. Contains a WebSocket server to communicate with the RobUI.
 1. Arguments configurable via a YAML file.
 1. Receives messages from the RobUI and publishes them to its own output topic.
 1. Subscribes to its own input topic and sends messages to the RobUI, if connected.
 1. Periodically publishes the status of connection to its own status topic.
 
-### [√] Turtlebot, written in Python
+### Turtlebot
+1. written in Python
 1. Can be run by the command line with arguments, or by instantiating the class.
 1. On creation, spawns its turtle in the Turtlesim environment.
 1. Subscribes to its own input node and control the turtle:
@@ -42,7 +59,8 @@
         - `kill` kills the turtle and quits the node.
 1. Publishes to its own output node with the turtle's state.
 
-### [√] Turtlehub, written in Python
+### Turtlehub
+1. written in Python
 1. Takes responsibility to start `turtlesim_node` if it is not running.
 1. Takes responsibility to start `ros2socket` if it is not running.
 1. Subscribes to ROS2Socket's output node and interpret the messages to control the Turtlebots.
@@ -80,7 +98,9 @@
         rosdep update && rosdep install -i --from-path src --rosdistro jazzy -y
         ```
 
-## Basic Usage
+## Usage
+
+### Basic Usage
 1. Depending on your ROS installation, add these line to your `.bashrc` file.
     ```bash
     source /opt/ros/jazzy/setup.bash
@@ -104,9 +124,9 @@
     cd src/robui/robui
     dotnet run -c Release
     ```
-1. The UI should open up. Click the `Manual` button if unsure of how to use the UI.
+1. The UI should open up. See the [UI Documentation](#ui-documentation) for more information on how to use it.
 
-## Advanced Usage
+### Advanced Usage
 1. The default address and port used by the ROS2Socket node is `localhost:8765`. To change this, edit the `config/ros2socket.yaml` file. By using an appropriate address, you can run the UI on a different machine.
 1. If you run the UI on Windows, you can connect to the ROS2Socket node running on Ubuntu in WSL2 by using `localhost` as the address.
 1. If you wish to run each node manually, you should read the code documentation to understand the parameters required by each node. Running each node separately is not thouroully tested and may not work as expected.
@@ -117,8 +137,19 @@
 |-----------|------------|
 | ![Dark Mode](img/dark_mode.png) | ![Light Mode](img/light_mode.png) |
 
-### Manual
-The manual can be accessed by clicking the `Manual` button. It provides a brief overview of the UI and how to use it.
+###  Simple Manual For UI
+
+1. Start the server by running it in the terminal BEFORE starting the UI.
+1. Observe on the bottom of the window, the status bar shows the connection status of `Turtlehub`.
+2. Wait until the text shows `Turtlehub: Connected  Turtlesim: Online`.
+3. Two robots, `rectbot` and `trigbot`, will be spawned automatically. You see them on the list.
+4. Right below the list, you can see the Task Configuration section. Change the values if you want.
+5. Click the `Start Task Execution` button to start the task, and observe how the robots move.
+6. While robots are moving, you can see their states updated in real-time on the list.
+7. If the `Movement Tasks` label shows `Running`, subsequent movement instructions will be ignored. The ignore logic is on the server, not the UI.
+8. You can overwrite the robots' movement instructions by changing the task configuration and clicking the button again, as long as the task is not running.
+
+A more detailed manual can be accessed by clicking the `Manual` button. It provides a brief overview of the UI and how to use it.
 
 ### Communication Protocol
 #### For developers. You can skip this section if you are a user of the UI.
