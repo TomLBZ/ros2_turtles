@@ -42,16 +42,17 @@
         - `kill` kills the turtle and quits the node.
 1. Publishes to its own output node with the turtle's state.
 
-### Turtlehub, written in Python
+### [√] Turtlehub, written in Python
 1. Takes responsibility to start `turtlesim_node` if it is not running.
 1. Takes responsibility to start `ros2socket` if it is not running.
 1. Subscribes to ROS2Socket's output node and interpret the messages to control the Turtlebots.
 1. Subscribes to the Turtlebots' state nodes and ROS2Socket's state node. Composite them with its own state and send them to ROS2Socket's input node.
+1. On termination, attempt to kill the `turtlesim_node`, `ros2socket`, and `Turtlebot` nodes.
 
 ## Compatibility
-| ROS Version | Ubuntu Version | ROS2 Package Compatible* |
-|-------------|-----------------|-------------|
-| ROS2 Jazzy Jalisco | 24.04 LTS | Yes |
+| ROS Version | Ubuntu Version | Python Version |  Compatible* |
+|-------------|-----------------|-------------|--------------|
+| ROS2 Jazzy Jalisco | 24.04 LTS | 3.12.3 | Yes |
 
 *Note that other combinations of ROS and Ubuntu versions may work, but have not been tested.
 
@@ -79,10 +80,12 @@
         rosdep update && rosdep install -i --from-path src --rosdistro jazzy -y
         ```
 
-## Usage
-1. Depending on your ROS installation, source the appropriate ROS2 setup file in EVERY terminal you open, or add this line to your `.bashrc` file.
+## Basic Usage
+1. Depending on your ROS installation, add these line to your `.bashrc` file.
     ```bash
     source /opt/ros/jazzy/setup.bash
+    source /usr/share/colcon_cd/function/colcon_cd.sh
+    export _colcon_cd_root=/opt/ros/jazzy/
     ```
 1. Build the package from the root of the workspace
     ```bash
@@ -103,16 +106,22 @@
     ```
 1. The UI should open up. Click the `Manual` button if unsure of how to use the UI.
 
+## Advanced Usage
+1. The default address and port used by the ROS2Socket node is `localhost:8765`. To change this, edit the `config/ros2socket.yaml` file. By using an appropriate address, you can run the UI on a different machine.
+1. If you run the UI on Windows, you can connect to the ROS2Socket node running on Ubuntu in WSL2 by using `localhost` as the address.
+1. If you wish to run each node manually, you should read the code documentation to understand the parameters required by each node. Running each node separately is not thouroully tested and may not work as expected.
+
 ## UI Documentation
-### Interface
+### Interface Screenshots
 | Dark Mode (on Windows 11 24H2) | Light Mode (on Ubuntu 24.04 LTS in WSL2) |
 |-----------|------------|
 | ![Dark Mode](img/dark_mode.png) | ![Light Mode](img/light_mode.png) |
 
 ### Manual
-TODO
+The manual can be accessed by clicking the `Manual` button. It provides a brief overview of the UI and how to use it.
 
 ### Communication Protocol
+#### For developers. You can skip this section if you are a user of the UI.
 The UI communicates via WebSocket to the ROS2Socket node. The messages are plain strings with the following format:
 ```
 cmd:data
@@ -144,4 +153,4 @@ the following command will be sent to the ROS2Socket node (where `120` is the nu
 ```
 strt:5,120,T,T
 ```
-which will then be interpreted by the ROS2Socket node to start the task execution accordingly.
+The design philosophy is to keep the communication simple and easy to understand, and to completely decouple the UI from the ROS2 environment and the logic that controls the robots. The UI should do no more than presenting received data as a user-friendly interface and sending user input as plain strings.

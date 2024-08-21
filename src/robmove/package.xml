@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>robmove</name>
-  <version>0.0.0</version>
+  <version>0.0.1</version>
   <description>This package contains all the logic for this project: 
   After countdown, controlling two robots to perform different movements 
   either simultaneously or one after the other, with blocking actions; 
