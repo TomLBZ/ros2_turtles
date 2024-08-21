@@ -3,16 +3,27 @@ using System.Collections.ObjectModel;
 
 namespace robui.ViewModels;
 
+/// <summary>
+/// The MainViewModel class represents the data model of the main window.
+/// </summary>
 public partial class MainViewModel : ObservableObject
 {
+    #region Observable Properties
+    // These observable properties are used to update the UI when the model changes.
     // strings
     [ObservableProperty]
     private string serverAddress = "localhost";
     [ObservableProperty]
     private string spawnBotName = "robot";
+    [ObservableProperty]
+    private string popupMessage = "";
     // numeric values
     [ObservableProperty]
     private int serverPort = 8765;
+    [ObservableProperty]
+    private int popupWidth = 400;
+    [ObservableProperty]
+    private int popupHeight = 300;
     [ObservableProperty]
     private float spawnX = 0f;
     [ObservableProperty]
@@ -40,6 +51,8 @@ public partial class MainViewModel : ObservableObject
     private bool isLoopPath = true;
     [ObservableProperty]
     private bool isVisualizeHome = false;
+    [ObservableProperty]
+    private bool isPopupVisible = false;
     // collections
     private ObservableCollection<RobotViewModel> robots;
     public ObservableCollection<RobotViewModel> Robots
@@ -47,9 +60,11 @@ public partial class MainViewModel : ObservableObject
         get => robots;
         set => SetProperty(ref robots, value);
     }
-    // dependent properties
-    public string HomeCoordinates => $"{SpawnX:F}, {SpawnY:F}";
+    #endregion
 
+    /// <summary>
+    /// The MainViewModel constructor initializes the robots collection.
+    /// </summary>
     public MainViewModel()
     {
         robots = [
