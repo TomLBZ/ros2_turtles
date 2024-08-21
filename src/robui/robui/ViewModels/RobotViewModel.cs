@@ -2,8 +2,12 @@
 
 namespace robui.ViewModels;
 
+/// <summary>
+/// RobotViewModel class represents the data model of the robot.
+/// </summary>
 public partial class RobotViewModel : ObservableObject
 {
+    // These observable properties are used to update the UI when the model changes.
     [ObservableProperty]
     private string name = "robot";
     [ObservableProperty]

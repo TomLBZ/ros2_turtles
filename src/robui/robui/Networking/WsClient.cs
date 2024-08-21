@@ -8,12 +8,20 @@ using System.Threading.Tasks;
 
 namespace robui.Networking;
 
+/// <summary>
+/// Enum <c>ConnectionState</c> represents the state of the connection.
+/// </summary>
 internal enum ConnectionState
 {
     Connected,
     Disconnected
 }
 
+/// <summary>
+/// Class <c>WsClient</c> is a simple WebSocket client that provides the following features:
+/// It raises events when a message is received or the connection state changes.
+/// It provides methods to connect, disconnect, send, and receive messages.
+/// </summary>
 internal class WsClient
 {
     private string address;
@@ -21,9 +29,14 @@ internal class WsClient
     private Timer timer;
     private ClientWebSocket socket;
     private CancellationTokenSource cts;
-    public bool IsAutoConnect { get; set; } = true;
     public event EventHandler<string>? MessageReceived;
     public event EventHandler<ConnectionState>? ConnectionChanged;
+    /// <summary>
+    /// Constructor <c>WsClient</c> creates a new WebSocket client.
+    /// </summary>
+    /// <param name="address">The address of the server</param>
+    /// <param name="port">The address of the port</param>
+    /// <param name="recon_freq_sec">The reconnection frequency</param>
     public WsClient(string address, int port, int recon_freq_sec = 1)
     {
         this.address = address;
@@ -36,14 +49,24 @@ internal class WsClient
         timer.Start();  
     }
 
+    /// <summary>
+    /// The method <c>TimerElapsed</c> is called when the timer elapses.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     internal void TimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        if (IsAutoConnect && socket.State != WebSocketState.Open)
+        if (socket.State != WebSocketState.Open)
         {
             Connect();
         }
     }
 
+    /// <summary>
+    /// The method <c>Update</c> updates the address and port of the server.
+    /// </summary>
+    /// <param name="address"></param>
+    /// <param name="port"></param>
     internal void Update(string address, int port)
     {
         this.address = address;
@@ -55,6 +78,9 @@ internal class WsClient
         Connect();
     }
 
+    /// <summary>
+    /// The method <c>Connect</c> connects to the server.
+    /// </summary>
     internal async void Connect()
     {
         try
@@ -76,6 +102,9 @@ internal class WsClient
         }
     }
 
+    /// <summary>
+    /// The method <c>Disconnect</c> disconnects from the server.
+    /// </summary>
     internal void Disconnect()
     {
         try
@@ -103,6 +132,10 @@ internal class WsClient
         }
     }
 
+    /// <summary>
+    /// The method <c>ReceiveMessagesAsync</c> receives messages from the server asynchronously.
+    /// </summary>
+    /// <returns></returns>
     public async Task ReceiveMessagesAsync()
     {
         var buffer = new byte[1024];
@@ -145,10 +178,20 @@ internal class WsClient
             }
         }
     }
+
+    /// <summary>
+    /// The method <c>OnMessageReceived</c> raises the MessageReceived event.
+    /// </summary>
+    /// <param name="message"></param>
     protected virtual void OnMessageReceived(string message)
     {
         MessageReceived?.Invoke(this, message);
     }
+
+    /// <summary>
+    /// The method <c>OnConnectionChanged</c> raises the ConnectionChanged event.
+    /// </summary>
+    /// <param name="state"></param>
     protected virtual void OnConnectionChanged(ConnectionState state)
     {
         ConnectionChanged?.Invoke(this, state);
