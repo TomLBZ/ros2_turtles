@@ -81,6 +81,7 @@ namespace robui.Views
         private void WsClientConnectionChanged(object? sender, ConnectionState state)
         {
             mvm.ServerStatus = state == ConnectionState.Connected;
+            if (!mvm.ServerStatus) mvm.IsTurtlesimOnline = false;
             if (state == ConnectionState.Connected && !isDefaultBotsAdded)
             {
                 isDefaultBotsAdded = true;
@@ -91,6 +92,11 @@ namespace robui.Views
                     await wsClient.SendMessageAsync(RobotSpawnCommand(mvm.Robots[1], trigbotGoals));
                     await Task.Delay(500);
                 });
+            }
+            else if (state == ConnectionState.Disconnected)
+            {
+                wsClient.Disconnect(); // be sure to disconnect the client, trigerring the reconnection timer
+                isDefaultBotsAdded = false;
             }
         }
 

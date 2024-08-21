@@ -56,7 +56,7 @@ internal class WsClient
     /// <param name="e"></param>
     internal void TimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        if (socket.State != WebSocketState.Open)
+        if (socket.State != WebSocketState.Open && socket.State != WebSocketState.Connecting)
         {
             Connect();
         }
