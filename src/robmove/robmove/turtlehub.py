@@ -145,7 +145,7 @@ class TurtleHub(Node):
         bot.kill()
         # cancel the asynchronous task and wait for it to finish
         self.bots_asynctasks[bot.name].cancel()
-        self.eventloop.run_until_complete(self.bots_asynctasks[bot.name])
+        # self.eventloop.run_until_complete(self.bots_asynctasks[bot.name])
         self.bots_asynctasks.pop(bot.name)
         bot.destroy_node()
 
@@ -309,15 +309,15 @@ class TurtleHub(Node):
         for name in self.botnames:
             # clears the callback chain by setting the next callback to an empty lambda
             self.bots[name].bot.stop_callbacks['next'] = lambda: None
-            # update the repeat time of the bot
-            self.bots[name].repeat(t_rep)
             if is_simul: # start bots simultaneously
-                self.bots[name].startin(t=t_aft)
+                self.bots[name].repeat(t_rep) # set repeat time
+                self.bots[name].startin(t=t_aft) # start the bot after t_aft
             else: # start bots one after another
-                if prevbot is not None: # previous bot has been set, second bot onwards
+                if prevbot is not None: # second bot onwards: runs after the previous bot
                     prevbot.bot.stop_callbacks['next'] = self.bots[name].start
-                else: # the first bot
+                else: # the first bot: has repeat and startin
                     prevbot = self.bots[name]
+                    prevbot.repeat(t_rep)
                     prevbot.startin(t=t_aft)
 
     def on_kill(self, data: List[str]) -> None:

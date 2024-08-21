@@ -119,12 +119,17 @@
     ```bash
     ros2 run robmove turtlehub --ros-args --params-file config/turtlehub.yaml
     ```
-1. In another terminal, build and run the UI project in the `src/robui/robui` directory
+1. In another terminal, build and run the UI project in the `src/robui/robui` directory after the `turtlehub` node has started.
     ```bash
     cd src/robui/robui
     dotnet run -c Release
     ```
 1. The UI should open up. See the [UI Documentation](#ui-documentation) for more information on how to use it.
+1. When closing the project, ***DO NOT*** use the [X] button on the `turtlesim` node, because it is managed by the `turtlehub` node automatically. Manually closing `turtlesim` may cause dangling processes. ***Instead***, do these steps:
+    - press `Ctrl+C` in the terminal where the `turtlehub` node is running, 
+    - ***wait for 1-2 seconds*** for the nodes in the subprocesses to terminate. You may see `publisher's context is invalid` in the terminal, it is normal because the node where the publisher is running has just terminated.
+    - then ***press*** `Ctrl+C` ***again***. You will see `turtlehub gracefully stopped` in the terminal.
+1. For the UI window, use the [X] button to close it.
 
 ### Advanced Usage
 1. The default address and port used by the ROS2Socket node is `localhost:8765`. To change this, edit the `config/ros2socket.yaml` file. By using an appropriate address, you can run the UI on a different machine.
@@ -139,7 +144,7 @@
 
 ###  Simple Manual For UI
 
-1. Start the server by running it in the terminal BEFORE starting the UI.
+1. Start the server by running it in the terminal ***BEFORE*** starting the UI.
 1. Observe on the bottom of the window, the status bar shows the connection status of `Turtlehub`.
 2. Wait until the text shows `Turtlehub: Connected  Turtlesim: Online`.
 3. Two robots, `rectbot` and `trigbot`, will be spawned automatically. You see them on the list.
